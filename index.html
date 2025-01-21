@@ -1,165 +1,168 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pay Code Definition JSON to CSV Converter</title>
-    <style>
+<!DOCTYPE html >
+    <html lang="en" >
+        <head>
+        <meta charset="UTF-8" >
+            <meta name="viewport" content = "width=device-width, initial-scale=1.0" >
+                <title>Pay Code Definition JSON to CSV Converter </title>
+                    <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #005151;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-        }
+    font - family: Arial, sans - serif;
+    margin: 0;
+    background - color: #005151;
+    color: white;
+    display: flex;
+    justify - content: center;
+    align - items: center;
+    height: 100vh;
+    text - align: center;
+}
 
         .container {
-            max-width: 500px;
-        }
+    max - width: 500px;
+}
 
-        #fileInput {
-            margin-top: 20px;
-        }
+#fileInput {
+    margin - top: 20px;
+}
 
-        input::file-selector-button {
-            align-items: center;
-            background-color: #0A66C2;
-            border: 0;
-            border-radius: 100px;
-            box-sizing: border-box;
-            color: #ffffff;
-            cursor: pointer;
-            display: inline-flex;
-            font-family: Arial, sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            justify-content: center;
-            line-height: 20px;
-            padding: 0 20px;
-            min-height: 40px;
-            transition: background-color 0.2s;
-        }
+input:: file - selector - button {
+    align - items: center;
+    background - color: #0A66C2;
+    border: 0;
+    border - radius: 100px;
+    box - sizing: border - box;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline - flex;
+    font - family: Arial, sans - serif;
+    font - size: 16px;
+    font - weight: 600;
+    justify - content: center;
+    line - height: 20px;
+    padding: 0 20px;
+    min - height: 40px;
+    transition: background - color 0.2s;
+}
 
-        input::file-selector-button:hover {
-            background-color: #16437E;
-        }
+input:: file - selector - button:hover {
+    background - color: #16437E;
+}
 
-        input::file-selector-button:disabled {
-            background-color: rgba(0, 0, 0, 0.2);
-            color: rgba(255, 255, 255, 0.5);
-            cursor: not-allowed;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Pay Code Definition JSON to CSV Converter</h1>
-        <p>Upload a <code>response.json</code> file to parse and export data into a CSV file.</p>
-        <input type="file" id="fileInput" accept=".json">
-    </div>
+input:: file - selector - button:disabled {
+    background - color: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: not - allowed;
+}
+</style>
+    </head>
+    < body >
+    <div class="container" >
+        <h1>Pay Code Definition JSON to CSV Converter </h1>
+            < p > Upload a < code > response.json < /code> file to parse and export data into a CSV file.</p >
+                <input type="file" id = "fileInput" accept = ".json" >
+                    </div>
 
-    <script>
-        document.getElementById('fileInput').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const jsonData = JSON.parse(e.target.result);
-    
-                        // Check for the correct structure in the JSON file
-                        if (jsonData.itemsRetrieveResponses && Array.isArray(jsonData.itemsRetrieveResponses)) {
-                            const records = jsonData.itemsRetrieveResponses.map(response => response.responseObjectNode?.WSAPayCode || {});
-    
-                            if (records.length > 0) {
-                                // Lookup table for user-friendly headers
-    const headerLookup = {
-        "@PersistPceSw": "Edits repeat on scheduled days until canceled",
-        "@CalculateAndUseHighestRate": "Calculate and use highest rate",
-        "@RequiresMgrApproval": "Requires approval",
-        "@Name": "Name",
-        "@EditCntToCdotSw": "Edits Count Towards Consecutive Day OT",
-        "@AmountType": "Type",
-        "@JustAutoResExpAsWorked": "Justified auto-resolved exception counts as worked",
-        "@VisibleToUser": "Visible on Totals tab in Timecard",
-        "MappedPayCodeTagItemNames": "",
-        "@VisibleInReport": "Visible in Report Options and Report Totals",
-        "@SeparateShiftSw": "Always process duration as separate shift",
-        "@ContributesToWeightedAverageRates": "Wages for the pay code contribute to weighted average rate",
-        "@AssociatedPayCodeName": "Associate with pay code",
-        "@PayrollOnly": "Payroll Only",
-        "@WeightedAverageRateContributionsUseAnAdjustedRate": "????",
-        "@EditCntToOt": "Edits Count Towards Overtime Limits",
-        "@CascadingDurationSw": "????",
-        "@WeightedAverageRateIsComputedDaily": "????",
-        "@TimekeepingOnly": "Timekeeping Only",
-        "@CheckAvlbltySw": "????",
-        "@SegmentTagName": "????",
-        "@WageMultiply": "Multiplier",
-        "@AutoResolved": "Use for Auto-Resolved Exception",
-        "@NetDown": "Adjust (net) hours and cost for overtime pay code",
-        "@HolShiftRule": "????",
-        "@EditAffShfTotal": "????",
-        "@WageAddition": "Wage",
-        "@Type": "Weighted Average Calculation - (P)erodic, (D)aily, (C)ontributing Shift Rule",
-        "@UnjustAutoResExpAsWorked": "Unjustified auto-resolved exception counts as worked",
-        "@ScheduleHoursType": "????",
-        "@VisibleInMainArea": "Visible in the main area of Timecard and Schedule, on Hours Summary tab in Schedule, My Requests, and in associated Reports",
-        "@IsMoneyCategory": "Is Money?",
-        "@EditExcuseAbsn": "Edit Excuses Absence",
-        "@PayUsingWeightedAverageRate": "Pay using weighted average rate"
+                    <script>
+document.getElementById('fileInput').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const jsonData = JSON.parse(e.target.result);
+
+                // Check for the correct structure in the JSON file
+                if (jsonData.itemsRetrieveResponses && Array.isArray(jsonData.itemsRetrieveResponses)) {
+                    const records = jsonData.itemsRetrieveResponses.map(response => response.responseObjectNode?.WSAPayCode || {});
+
+                    if (records.length > 0) {
+                        // Lookup table for user-friendly headers
+                        const headerLookup = {
+                            "@PersistPceSw": "Edits repeat on scheduled days until canceled",
+                            "@CalculateAndUseHighestRate": "Calculate and use highest rate",
+                            "@RequiresMgrApproval": "Requires approval",
+                            "@Name": "Name",
+                            "@EditCntToCdotSw": "Edits Count Towards Consecutive Day OT",
+                            "@AmountType": "Type",
+                            "@JustAutoResExpAsWorked": "Justified auto-resolved exception counts as worked",
+                            "@VisibleToUser": "Visible on Totals tab in Timecard",
+                            "MappedPayCodeTagItemNames": "",
+                            "@VisibleInReport": "Visible in Report Options and Report Totals",
+                            "@SeparateShiftSw": "Always process duration as separate shift",
+                            "@ContributesToWeightedAverageRates": "Wages for the pay code contribute to weighted average rate",
+                            "@AssociatedPayCodeName": "Associate with pay code",
+                            "@PayrollOnly": "Payroll Only",
+                            "@WeightedAverageRateContributionsUseAnAdjustedRate": "????",
+                            "@EditCntToOt": "Edits Count Towards Overtime Limits",
+                            "@CascadingDurationSw": "????",
+                            "@WeightedAverageRateIsComputedDaily": "????",
+                            "@TimekeepingOnly": "Timekeeping Only",
+                            "@CheckAvlbltySw": "????",
+                            "@SegmentTagName": "????",
+                            "@WageMultiply": "Multiplier",
+                            "@AutoResolved": "Use for Auto-Resolved Exception",
+                            "@NetDown": "Adjust (net) hours and cost for overtime pay code",
+                            "@HolShiftRule": "????",
+                            "@EditAffShfTotal": "????",
+                            "@WageAddition": "Wage",
+                            "@Type": "Weighted Average Calculation - (P)erodic, (D)aily, (C)ontributing Shift Rule",
+                            "@UnjustAutoResExpAsWorked": "Unjustified auto-resolved exception counts as worked",
+                            "@ScheduleHoursType": "????",
+                            "@VisibleInMainArea": "Visible in the main area of Timecard and Schedule, on Hours Summary tab in Schedule, My Requests, and in associated Reports",
+                            "@IsMoneyCategory": "Is Money?",
+                            "@EditExcuseAbsn": "Edit Excuses Absence",
+                            "@PayUsingWeightedAverageRate": "Pay using weighted average rate",
+                            "@AbbreviationChar": "Short Name",
+                            "@TerminalCdNum": "Code Number",
+                            "@IVRAlias": "TeleTime IP Alias"
                                 };
-    
-                                // Extract unique headers dynamically and map to friendly names
-                                const headers = [...new Set(records.flatMap(record => Object.keys(record)))];
-                                const friendlyHeaders = headers.map(key => headerLookup[key] || key);
-    
-                                // Build rows with friendly headers
-                                const rows = [friendlyHeaders];
-                                records.forEach(record => {
-                                    rows.push(headers.map(key => record[key] !== undefined ? record[key] : ""));
-                                });
-    
-                                // Convert rows to CSV content
-                                const csvContent = rows.map(row => row.map(cell => `"${cell}"`).join(",")).join("\n");
-                                const blob = new Blob([csvContent], { type: "text/csv" });
-                                const url = URL.createObjectURL(blob);
-    
-                                // Generate file name with timestamp
-                                const now = new Date();
-                                const timestamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}T${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
-                                const fileName = `PayCodeExport_${timestamp}.csv`;
-    
-                                // Create a download link and trigger it
-                                const link = document.createElement("a");
-                                link.href = url;
-                                link.download = fileName;
-                                link.click();
-    
-                                URL.revokeObjectURL(url);
-    
-                                // Clear the file input to allow a new upload
-                                document.getElementById('fileInput').value = '';
-                                alert("File processed successfully!");
-                            } else {
-                                alert("No WSAPayCode data found in the JSON.");
-                            }
-                        } else {
-                            alert("Invalid JSON format. Ensure the file contains an 'itemsRetrieveResponses' array.");
-                        }
-                    } catch (error) {
-                        alert("Failed to process the JSON file. Ensure the file format is correct.");
-                        console.error(error);
+
+                        // Extract unique headers dynamically and map to friendly names
+                        const headers = [...new Set(records.flatMap(record => Object.keys(record)))];
+                        const friendlyHeaders = headers.map(key => headerLookup[key] || key);
+
+                        // Build rows with friendly headers
+                        const rows = [friendlyHeaders];
+                        records.forEach(record => {
+                            rows.push(headers.map(key => record[key] !== undefined ? record[key] : ""));
+                        });
+
+                        // Convert rows to CSV content
+                        const csvContent = rows.map(row => row.map(cell => `"${cell}"`).join(",")).join("\n");
+                        const blob = new Blob([csvContent], { type: "text/csv" });
+                        const url = URL.createObjectURL(blob);
+
+                        // Generate file name with timestamp
+                        const now = new Date();
+                        const timestamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}T${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+                        const fileName = `PayCodeExport_${timestamp}.csv`;
+
+                        // Create a download link and trigger it
+                        const link = document.createElement("a");
+                        link.href = url;
+                        link.download = fileName;
+                        link.click();
+
+                        URL.revokeObjectURL(url);
+
+                        // Clear the file input to allow a new upload
+                        document.getElementById('fileInput').value = '';
+                        alert("File processed successfully!");
+                    } else {
+                        alert("No WSAPayCode data found in the JSON.");
                     }
-                };
-                reader.readAsText(file);
+                } else {
+                    alert("Invalid JSON format. Ensure the file contains an 'itemsRetrieveResponses' array.");
+                }
+            } catch (error) {
+                alert("Failed to process the JSON file. Ensure the file format is correct.");
+                console.error(error);
             }
-        });
-    </script>
-    
-</body>
-</html>
+        };
+        reader.readAsText(file);
+    }
+});
+</script>
+
+    </body>
+    </html>
