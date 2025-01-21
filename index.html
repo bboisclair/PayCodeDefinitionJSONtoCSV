@@ -77,21 +77,41 @@
     
                             if (records.length > 0) {
                                 // Lookup table for user-friendly headers
-                                const headerLookup = {
-                                    "@PersistPceSw": "Persist PCE Switch",
-                                    "@CalculateAndUseHighestRate": "Calculate and Use Highest Rate",
-                                    "@RequiresMgrApproval": "Requires Approval",
-                                    "@Name": "Name",
-                                    "@AmountType": "Amount Type",
-                                    "@VisibleToUser": "Visible to User",
-                                    "@VisibleInReport": "Visible in Report",
-                                    "@SeparateShiftSw": "Separate Shift Switch",
-                                    "@Type": "Type",
-                                    "@WageMultiply": "Wage Multiply",
-                                    "@EditAffShfTotal": "Edit Affected Shift Total",
-                                    "@ScheduleHoursType": "Schedule Hours Type",
-                                    "@IsMoneyCategory": "Is Money Category",
-                                    "@PayUsingWeightedAverageRate": "Pay Using Weighted Average Rate"
+    const headerLookup = {
+        "@PersistPceSw": "Edits repeat on scheduled days until canceled",
+        "@CalculateAndUseHighestRate": "Calculate and use highest rate",
+        "@RequiresMgrApproval": "Requires approval",
+        "@Name": "Name",
+        "@EditCntToCdotSw": "Edits Count Towards Consecutive Day OT",
+        "@AmountType": "Type",
+        "@JustAutoResExpAsWorked": "Justified auto-resolved exception counts as worked",
+        "@VisibleToUser": "Visible on Totals tab in Timecard",
+        "MappedPayCodeTagItemNames": "",
+        "@VisibleInReport": "Visible in Report Options and Report Totals",
+        "@SeparateShiftSw": "Always process duration as separate shift",
+        "@ContributesToWeightedAverageRates": "Wages for the pay code contribute to weighted average rate",
+        "@AssociatedPayCodeName": "Associate with pay code",
+        "@PayrollOnly": "Payroll Only",
+        "@WeightedAverageRateContributionsUseAnAdjustedRate": "????",
+        "@EditCntToOt": "Edits Count Towards Overtime Limits",
+        "@CascadingDurationSw": "????",
+        "@WeightedAverageRateIsComputedDaily": "????",
+        "@TimekeepingOnly": "Timekeeping Only",
+        "@CheckAvlbltySw": "????",
+        "@SegmentTagName": "????",
+        "@WageMultiply": "Multiplier",
+        "@AutoResolved": "Use for Auto-Resolved Exception",
+        "@NetDown": "Adjust (net) hours and cost for overtime pay code",
+        "@HolShiftRule": "????",
+        "@EditAffShfTotal": "????",
+        "@WageAddition": "Wage",
+        "@Type": "Weighted Average Calculation - (P)erodic, (D)aily, (C)ontributing Shift Rule",
+        "@UnjustAutoResExpAsWorked": "Unjustified auto-resolved exception counts as worked",
+        "@ScheduleHoursType": "????",
+        "@VisibleInMainArea": "Visible in the main area of Timecard and Schedule, on Hours Summary tab in Schedule, My Requests, and in associated Reports",
+        "@IsMoneyCategory": "Is Money?",
+        "@EditExcuseAbsn": "Edit Excuses Absence",
+        "@PayUsingWeightedAverageRate": "Pay using weighted average rate"
                                 };
     
                                 // Extract unique headers dynamically and map to friendly names
